@@ -351,24 +351,19 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
 <div id="backdrop" class="backdrop hidden"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  PASTE YOUR SUPABASE CREDENTIALS HERE (Step 3 below)
-// ═══════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://oniafjgebqyeztiziucl.supabase.co';
+const SUPABASE_URL = 'https://oniafjgebqyeztiziuci.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_rdsEVytlACCfgr5X5loKsA_YA-E_ayI';
-// ═══════════════════════════════════════════════════════
 
 let startTime = null;
 let editingSessionId = null;
 let currentUser = null;
 let supabaseClient = null;
 let authMode = 'login';
-let allSessions = [];   // master list (all dates)
-let sessions = [];      // filtered view
+let allSessions = [];
+let sessions = [];
 let activeFilter = 'today';
 let settings = { name: 'User', theme: 'auto', customBg: null };
 
-// DOM refs
 const body = document.body;
 const bg = document.getElementById('bg');
 const greetingEl = document.getElementById('greeting');
@@ -430,7 +425,6 @@ const sessionCountEl = document.getElementById('session-count');
 const sessionsList = document.getElementById('sessions-list');
 const btnClear = document.getElementById('btn-clear');
 
-// ── Sync badge ───────────────────────────────────────────
 function setSyncStatus(state, label) {
   syncIndicator.className = `sync-indicator ${state}`;
   syncIndicator.textContent = label;
@@ -439,7 +433,6 @@ function setSyncStatus(state, label) {
 
 function getStorageKey(k) { return currentUser ? `${currentUser.id}_${k}` : k; }
 
-// ── Boot ─────────────────────────────────────────────────
 async function init() {
   loadLocalSettings();
   applySettings();
@@ -493,7 +486,6 @@ async function init() {
   checkBuddyParam();
 }
 
-// ── Auth ─────────────────────────────────────────────────
 async function initAuth() {
   const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
   authSetupMsg.classList.toggle('hidden', configured);
@@ -620,7 +612,6 @@ function setAuthStatus(msg, type = '') {
   authStatus.className = `auth-status ${type}`.trim();
 }
 
-// ── Cloud CRUD ────────────────────────────────────────────
 async function loadCloudSessions() {
   setSyncStatus('syncing', '↻ Syncing…');
   sessionsList.innerHTML = '<div class="loading-msg">Loading your sessions…</div>';
@@ -701,7 +692,6 @@ async function migrateLocalToCloud() {
   if (!error) localStorage.removeItem('tl_sessions');
 }
 
-// ── Local storage (guest) ─────────────────────────────────
 function loadLocalSessions() {
   const raw = localStorage.getItem('tl_sessions');
   allSessions = raw ? JSON.parse(raw) : [];
@@ -717,7 +707,6 @@ function loadLocalSettings() {
   if (!localStorage.getItem('tl_theme_user_selected')) settings.theme = 'auto';
 }
 
-// ── Filtering ─────────────────────────────────────────────
 function applyFilter() {
   const today = new Date().toISOString().slice(0, 10);
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
@@ -727,7 +716,6 @@ function applyFilter() {
   renderSessions();
 }
 
-// ── Session actions ───────────────────────────────────────
 function logStart() {
   startTime = new Date();
   btnStart.disabled = true; btnEnd.disabled = false;
@@ -862,7 +850,6 @@ async function clearAll() {
   applyFilter();
 }
 
-// ── Clock & theme ─────────────────────────────────────────
 function updateClock() {
   const now = new Date(), h = now.getHours();
   const fmt = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
@@ -883,7 +870,6 @@ function handleBgUpload(e){const f=e.target.files[0];if(!f)return;const r=new Fi
 function resetBg(){settings.customBg=null;applyBg();}
 function saveSettings(){settings.name=inputName.value.trim()||'User';localStorage.setItem(getStorageKey('tl_settings'),JSON.stringify(settings));updateClock();closeModals();}
 
-// ── Share ─────────────────────────────────────────────────
 function buildSummaryText(){
   const now=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   const totalMins=sessions.reduce((a,s)=>a+(s.mins||0),0);
@@ -915,7 +901,6 @@ function checkBuddyParam(){
   try{const d=JSON.parse(decodeURIComponent(escape(atob(param))));const tm=(d.sessions||[]).reduce((a,s)=>a+(s.mins||0),0);let t=`📊 ${d.name}'s Time Log — ${d.date}\n${'─'.repeat(34)}\n`;(d.sessions||[]).forEach((s,i)=>{t+=`${i+1}. ${s.label||'Focus Block'} — ${s.start} – ${s.end}  (${s.dur})\n`;});t+=`${'─'.repeat(34)}\n⏱ Total: ${Math.floor(tm/60)}h ${tm%60}m`;buddyViewTitle.textContent=`📊 ${d.name}'s Time Log`;buddyViewBody.textContent=t;buddyOverlay.classList.remove('hidden');history.replaceState({},'',location.pathname);}catch(e){console.warn('Invalid buddy link',e);}
 }
 
-// ── Modals ────────────────────────────────────────────────
 function openModal(m){m.classList.remove('hidden');backdrop.classList.remove('hidden');if(m===settingsModal){inputName.value=settings.name;updateThemeLabel();}}
 function closeModals(){[authModal,settingsModal,shareModal,editModal].forEach(m=>m.classList.add('hidden'));backdrop.classList.add('hidden');}
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
