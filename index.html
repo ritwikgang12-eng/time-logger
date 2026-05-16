@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
+/* ── Reset & Variables ───────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --accent:#007aff;--danger:#ff3b30;--green:#34c759;
@@ -20,10 +21,14 @@
 }
 body.theme-light{--bg:var(--bg-l);--t1:var(--t1-l);--t2:var(--t2-l);--input:var(--input-l);--glass:var(--glass-l);--glass-border:var(--glass-border-l);--session-glass:var(--session-glass-l);--session-border:var(--session-border-l)}
 body.theme-dark{--bg:var(--bg-d);--t1:var(--t1-d);--t2:var(--t2-d);--input:var(--input-d);--glass:var(--glass-d);--glass-border:var(--glass-border-d);--session-glass:var(--session-glass-d);--session-border:var(--session-border-d)}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
 html,body{height:100%;font-family:'Figtree',-apple-system,sans-serif;color:var(--t1);transition:color 0.3s}
 .bg{position:fixed;inset:0;z-index:0;transition:background 0.5s;background-size:cover!important;background-position:center!important}
 body.theme-light .bg{background:linear-gradient(145deg,#dff3ff 0%,#f8fbff 38%,#d8f1df 70%,#fff1c8 100%)}
-body.theme-dark .bg{background:linear-gradient(145deg,#070916 0%,#11172a 38%,#15233a 70%,#05070d 100%)}
+body.theme-dark  .bg{background:linear-gradient(145deg,#070916 0%,#11172a 38%,#15233a 70%,#05070d 100%)}
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
 .topnav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:var(--glass);border-bottom:1px solid var(--glass-border);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%)}
 .greeting{font-size:17px;font-weight:700;color:var(--t1);letter-spacing:-0.3px}
 .clock{font-size:12px;color:var(--t2);margin-top:2px;font-weight:500;letter-spacing:0.2px}
@@ -46,6 +51,8 @@ body.theme-dark .share-btn{color:#5ab0ff}
 .sync-indicator.syncing{background:rgba(255,149,0,0.12);border-color:rgba(255,149,0,0.35);color:#ff9500}
 .sync-indicator.error{background:rgba(255,59,48,0.12);border-color:rgba(255,59,48,0.35);color:var(--danger)}
 .sync-indicator.local{background:rgba(142,142,147,0.12);border-color:rgba(142,142,147,0.35);color:var(--t2)}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
 .layout{position:relative;z-index:1;display:grid;grid-template-columns:370px 1fr;gap:16px;padding:20px 28px;min-height:calc(100vh - 65px)}
 @media(max-width:780px){.layout{grid-template-columns:1fr;padding:14px 16px}}
 .card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:22px;backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);transition:background 0.3s,border-color 0.3s;position:relative;overflow:hidden}
@@ -54,6 +61,8 @@ body.theme-dark .card::before{background:linear-gradient(145deg,rgba(255,255,255
 .input-card{display:flex;flex-direction:column;gap:18px;align-self:start}
 .log-card{display:flex;flex-direction:column;gap:0;background:transparent;border-color:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 .log-card::before{display:none}
+
+/* ── Timer Card ──────────────────────────────────────────────────────────── */
 .auto-zone{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 0}
 .auto-hint{font-size:12px;color:var(--t2);text-align:center;font-weight:500}
 .auto-time-preview{font-size:56px;font-weight:800;letter-spacing:-3px;color:var(--t1);font-variant-numeric:tabular-nums;line-height:1}
@@ -68,6 +77,8 @@ body.theme-dark .start-btn{background:rgba(0,122,255,0.18);color:#5ab0ff}
 .end-btn{background:rgba(255,59,48,0.18);border-color:rgba(255,59,48,0.38);color:#ff3b30}
 .end-btn:hover:not(:disabled){background:rgba(255,59,48,0.28)}
 body.theme-dark .end-btn{color:#ff6b63}
+
+/* ── Sessions List ───────────────────────────────────────────────────────── */
 .stats-bar{display:flex;align-items:center;gap:24px;padding-bottom:14px;flex-wrap:wrap}
 .stat{display:flex;flex-direction:column;gap:2px}
 .stat-val{font-size:22px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
@@ -99,6 +110,8 @@ body.theme-dark .s-dur{color:#5ab0ff}
 .s-delete-btn:active{transform:scale(0.95)}
 .empty-msg{text-align:center;padding:40px 0;font-size:14px;color:var(--t2);line-height:1.6}
 .loading-msg{text-align:center;padding:40px 0;font-size:14px;color:var(--t2)}
+
+/* ── Modals ──────────────────────────────────────────────────────────────── */
 .backdrop{position:fixed;inset:0;z-index:199;background:rgba(0,0,0,0.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .backdrop.hidden{display:none}
 .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;pointer-events:none}
@@ -132,7 +145,10 @@ body.theme-dark .upload-label{color:#5ab0ff}
 .save-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 60%);pointer-events:none}
 .save-btn:hover{background:rgba(0,122,255,0.30)}
 .save-btn:active{transform:scale(0.98)}
+.save-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
 body.theme-dark .save-btn{color:#5ab0ff}
+
+/* ── Auth ────────────────────────────────────────────────────────────────── */
 .auth-form{display:flex;flex-direction:column;gap:14px}
 .auth-setup-msg{padding:14px 16px;border:1px solid rgba(255,149,0,0.34);background:rgba(255,149,0,0.12);border-radius:var(--radius);color:var(--t1);font-size:13px;line-height:1.5}
 .auth-user-panel{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--glass-border);background:var(--input);border-radius:var(--radius)}
@@ -147,6 +163,8 @@ body.theme-dark .save-btn{color:#5ab0ff}
 .auth-switch{align-self:center;margin-left:0;color:var(--accent)}
 .logout-btn{padding:8px 14px;border-radius:var(--radius);border:1px solid var(--glass-border);background:var(--glass);color:var(--t1);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:inherit;flex-shrink:0}
 .logout-btn:hover{background:rgba(255,59,48,0.15);border-color:rgba(255,59,48,0.35);color:var(--danger)}
+
+/* ── Share ───────────────────────────────────────────────────────────────── */
 .share-section-label{font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--t2);margin-top:4px}
 .social-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .social-btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);color:var(--t1);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s ease;position:relative;overflow:hidden;font-family:inherit}
@@ -168,12 +186,16 @@ body.theme-dark .buddy-gen-btn{color:#5ab0ff}
 .copy-buddy-btn{width:100%;padding:10px;border-radius:var(--radius);border:1px solid rgba(0,122,255,0.32);background:rgba(0,122,255,0.10);color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all 0.15s;font-family:inherit}
 .copy-buddy-btn:hover{background:rgba(0,122,255,0.20)}
 body.theme-dark .copy-buddy-btn{color:#5ab0ff}
+.share-content{font-size:13px;color:var(--t2);white-space:pre-wrap;line-height:1.7;background:var(--input);border-radius:var(--radius);padding:12px;font-family:monospace}
+.share-card{width:min(480px,calc(100vw - 32px))}
+
+/* ── Buddy Overlay ───────────────────────────────────────────────────────── */
 .buddy-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.40);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center}
 .buddy-overlay.hidden{display:none}
 .buddy-view-card{background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(44px) saturate(200%);-webkit-backdrop-filter:blur(44px) saturate(200%);border-radius:var(--radius-xl);padding:28px;width:min(500px,calc(100vw - 32px));max-height:80vh;overflow-y:auto;display:flex;flex-direction:column;gap:16px;box-shadow:0 28px 90px rgba(0,0,0,0.28)}
 .buddy-view-hdr{display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:700;color:var(--t1);padding-bottom:14px;border-bottom:1px solid var(--glass-border)}
-.share-content{font-size:13px;color:var(--t2);white-space:pre-wrap;line-height:1.7;background:var(--input);border-radius:var(--radius);padding:12px;font-family:monospace}
-.share-card{width:min(480px,calc(100vw - 32px))}
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
 .hidden{display:none!important}
 @media(max-width:480px){
   .topnav{padding:14px 16px}
@@ -187,19 +209,21 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
 <body class="theme-light">
 <div id="bg" class="bg"></div>
 
+<!-- ── Nav ──────────────────────────────────────────────────────────────── -->
 <nav class="topnav">
   <div>
     <div id="greeting" class="greeting">Good Morning, User</div>
     <div id="clock" class="clock"></div>
   </div>
   <div class="nav-actions">
-    <span id="sync-indicator" class="sync-indicator local hidden">⬤ Guest</span>
+    <span id="sync-indicator" class="sync-indicator local hidden">Guest</span>
     <button id="btn-auth" class="nav-btn auth-btn"><span id="auth-text">Login</span></button>
-    <button id="btn-share" class="nav-btn share-btn">↗ Share</button>
+    <button id="btn-share" class="nav-btn share-btn">Share</button>
     <button id="btn-settings" class="nav-btn icon-nav-btn" title="Settings">⚙</button>
   </div>
 </nav>
 
+<!-- ── Main ─────────────────────────────────────────────────────────────── -->
 <main class="layout">
   <section class="card input-card">
     <div class="auto-zone">
@@ -207,8 +231,8 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
       <div id="auto-time-preview" class="auto-time-preview">--:-- --</div>
     </div>
     <div class="btn-row">
-      <button id="btn-start" class="log-btn start-btn">▶ Start</button>
-      <button id="btn-end" class="log-btn end-btn" disabled>■ End</button>
+      <button id="btn-start" class="log-btn start-btn">Start</button>
+      <button id="btn-end" class="log-btn end-btn" disabled>End</button>
     </div>
   </section>
 
@@ -228,7 +252,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
   </section>
 </main>
 
-<!-- Auth Modal -->
+<!-- ── Auth Modal ────────────────────────────────────────────────────────── -->
 <div id="auth-modal" class="modal hidden">
   <div class="modal-card auth-card">
     <div class="modal-hdr">
@@ -262,7 +286,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
   </div>
 </div>
 
-<!-- Edit Modal -->
+<!-- ── Edit Modal ────────────────────────────────────────────────────────── -->
 <div id="edit-modal" class="modal hidden">
   <div class="modal-card edit-modal-card">
     <div class="modal-hdr">
@@ -280,7 +304,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
   </div>
 </div>
 
-<!-- Settings Modal -->
+<!-- ── Settings Modal ────────────────────────────────────────────────────── -->
 <div id="settings-modal" class="modal hidden">
   <div class="modal-card">
     <div class="modal-hdr">
@@ -310,7 +334,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
   </div>
 </div>
 
-<!-- Share Modal -->
+<!-- ── Share Modal ───────────────────────────────────────────────────────── -->
 <div id="share-modal" class="modal hidden">
   <div class="modal-card share-card">
     <div class="modal-hdr">
@@ -321,13 +345,13 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
     <div class="share-section-label">Share via</div>
     <div class="social-grid">
       <button id="shr-whatsapp" class="social-btn whatsapp-btn"><span class="social-icon">💬</span><span>WhatsApp</span></button>
-      <button id="shr-x" class="social-btn x-btn"><span class="social-icon">𝕏</span><span>X / Twitter</span></button>
-      <button id="shr-instagram" class="social-btn ig-btn"><span class="social-icon">📸</span><span>Instagram</span></button>
-      <button id="shr-copy" class="social-btn copy-btn"><span class="social-icon">📋</span><span id="copy-label">Copy Text</span></button>
+      <button id="shr-x"        class="social-btn x-btn">       <span class="social-icon">𝕏</span> <span>X / Twitter</span></button>
+      <button id="shr-instagram" class="social-btn ig-btn">     <span class="social-icon">📸</span><span>Instagram</span></button>
+      <button id="shr-copy"     class="social-btn copy-btn">    <span class="social-icon">📋</span><span id="copy-label">Copy Text</span></button>
     </div>
     <div class="buddy-section">
       <div class="share-section-label">Buddy Link</div>
-      <p class="buddy-hint">Generate a link so someone can view your time log — read-only, no account needed.</p>
+      <p class="buddy-hint">Generate a read-only link so someone can view your time log — no account needed.</p>
       <div class="buddy-row">
         <input id="buddy-link-input" class="buddy-link-box" type="text" readonly placeholder="Click generate…">
         <button id="btn-gen-buddy" class="buddy-gen-btn">Generate</button>
@@ -337,7 +361,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
   </div>
 </div>
 
-<!-- Buddy Overlay -->
+<!-- ── Buddy Overlay ─────────────────────────────────────────────────────── -->
 <div id="buddy-overlay" class="buddy-overlay hidden">
   <div class="buddy-view-card">
     <div class="buddy-view-hdr">
@@ -350,107 +374,110 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
 
 <div id="backdrop" class="backdrop hidden"></div>
 
+<!-- ── Script ────────────────────────────────────────────────────────────── -->
 <script>
-const SUPABASE_URL = 'https://oniafjgebqyeztiziuci.supabase.co';
+/* ── Config — replace with your own Supabase project values ─────────────── */
+const SUPABASE_URL      = 'https://oniafjgebqyeztiziuci.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_rdsEVytlACCfgr5X5loKsA_YA-E_ayI';
+/* ─────────────────────────────────────────────────────────────────────────── */
 
-// ── FIX 3: Handle email confirmation token in URL hash ──────────────────────
-// Supabase redirects back with #access_token=... or #error=... in the hash.
-// We need to let the Supabase client consume the hash before anything else.
-// This runs synchronously before init() so the session is established in time.
+/* ── Handle email-confirmation redirect hash BEFORE creating the client ──── */
 (function handleAuthCallback() {
   const hash = window.location.hash;
   if (!hash) return;
-  // If it's an error fragment, clear it and show a user-friendly message
   if (hash.includes('error=')) {
+    const desc = new URLSearchParams(hash.slice(1)).get('error_description')
+      || 'The confirmation link is invalid or has expired. Please request a new one.';
+    window.__authCallbackError = decodeURIComponent(desc.replace(/\+/g,' '));
     history.replaceState({}, '', window.location.pathname + window.location.search);
-    // Store a flag so we can show the error after Supabase client is ready
-    window.__authCallbackError = new URLSearchParams(hash.slice(1)).get('error_description') || 'The confirmation link is invalid or has expired. Please request a new one.';
   }
-  // If it's a valid token, Supabase JS will detect and consume it automatically
-  // when createClient is called — we just need to NOT strip the hash prematurely.
+  // If it's a valid token, Supabase detectSessionInUrl will consume it.
 })();
-// ───────────────────────────────────────────────────────────────────────────
 
-let startTime = null;
+/* ── State ───────────────────────────────────────────────────────────────── */
+let startTime        = null;
 let editingSessionId = null;
-let currentUser = null;
-let supabaseClient = null;
-let authMode = 'login';
-let allSessions = [];
-let sessions = [];
-let activeFilter = 'today';
-let settings = { name: 'User', theme: 'auto', customBg: null };
+let currentUser      = null;
+let supabaseClient   = null;
+let authMode         = 'login';
+let allSessions      = [];
+let sessions         = [];
+let activeFilter     = 'today';
+let settings         = { name:'User', theme:'auto', customBg:null };
 
-const body = document.body;
-const bg = document.getElementById('bg');
-const greetingEl = document.getElementById('greeting');
-const clockEl = document.getElementById('clock');
-const syncIndicator = document.getElementById('sync-indicator');
-const btnAuth = document.getElementById('btn-auth');
-const authText = document.getElementById('auth-text');
-const authModal = document.getElementById('auth-modal');
+/* ── DOM refs ────────────────────────────────────────────────────────────── */
+const body           = document.body;
+const bg             = document.getElementById('bg');
+const greetingEl     = document.getElementById('greeting');
+const clockEl        = document.getElementById('clock');
+const syncIndicator  = document.getElementById('sync-indicator');
+const btnAuth        = document.getElementById('btn-auth');
+const authText       = document.getElementById('auth-text');
+const authModal      = document.getElementById('auth-modal');
 const authModalTitle = document.getElementById('auth-modal-title');
-const authSetupMsg = document.getElementById('auth-setup-msg');
-const authForm = document.getElementById('auth-form');
+const authSetupMsg   = document.getElementById('auth-setup-msg');
+const authForm       = document.getElementById('auth-form');
 const authIdentifier = document.getElementById('auth-identifier');
-const authPassword = document.getElementById('auth-password');
-const btnAuthSubmit = document.getElementById('btn-auth-submit');
-const authUserPanel = document.getElementById('auth-user-panel');
-const authAvatar = document.getElementById('auth-avatar');
-const authUserName = document.getElementById('auth-user-name');
-const authUserEmail = document.getElementById('auth-user-email');
-const authStatus = document.getElementById('auth-status');
-const btnAuthSwitch = document.getElementById('btn-auth-switch');
-const btnCloseAuth = document.getElementById('btn-close-auth');
-const btnLogout = document.getElementById('btn-logout');
-const btnShare = document.getElementById('btn-share');
-const btnSettings = document.getElementById('btn-settings');
-const settingsModal = document.getElementById('settings-modal');
-const shareModal = document.getElementById('share-modal');
-const editModal = document.getElementById('edit-modal');
-const backdrop = document.getElementById('backdrop');
-const btnCloseSet = document.getElementById('btn-close-settings');
-const btnCloseShare = document.getElementById('btn-close-share');
-const btnCloseEdit = document.getElementById('btn-close-edit');
-const btnCancelEdit = document.getElementById('btn-cancel-edit');
-const btnSaveEdit = document.getElementById('btn-save-edit');
+const authPassword   = document.getElementById('auth-password');
+const btnAuthSubmit  = document.getElementById('btn-auth-submit');
+const authUserPanel  = document.getElementById('auth-user-panel');
+const authAvatar     = document.getElementById('auth-avatar');
+const authUserName   = document.getElementById('auth-user-name');
+const authUserEmail  = document.getElementById('auth-user-email');
+const authStatus     = document.getElementById('auth-status');
+const btnAuthSwitch  = document.getElementById('btn-auth-switch');
+const btnCloseAuth   = document.getElementById('btn-close-auth');
+const btnLogout      = document.getElementById('btn-logout');
+const btnShare       = document.getElementById('btn-share');
+const btnSettings    = document.getElementById('btn-settings');
+const settingsModal  = document.getElementById('settings-modal');
+const shareModal     = document.getElementById('share-modal');
+const editModal      = document.getElementById('edit-modal');
+const backdrop       = document.getElementById('backdrop');
+const btnCloseSet    = document.getElementById('btn-close-settings');
+const btnCloseShare  = document.getElementById('btn-close-share');
+const btnCloseEdit   = document.getElementById('btn-close-edit');
+const btnCancelEdit  = document.getElementById('btn-cancel-edit');
+const btnSaveEdit    = document.getElementById('btn-save-edit');
 const editLabelInput = document.getElementById('edit-label-input');
-const shrWhatsapp = document.getElementById('shr-whatsapp');
-const shrX = document.getElementById('shr-x');
-const shrInstagram = document.getElementById('shr-instagram');
-const shrCopy = document.getElementById('shr-copy');
-const copyLabel = document.getElementById('copy-label');
-const shareContent = document.getElementById('share-content');
+const shrWhatsapp    = document.getElementById('shr-whatsapp');
+const shrX           = document.getElementById('shr-x');
+const shrInstagram   = document.getElementById('shr-instagram');
+const shrCopy        = document.getElementById('shr-copy');
+const copyLabel      = document.getElementById('copy-label');
+const shareContent   = document.getElementById('share-content');
 const buddyLinkInput = document.getElementById('buddy-link-input');
-const btnGenBuddy = document.getElementById('btn-gen-buddy');
-const btnCopyBuddy = document.getElementById('btn-copy-buddy');
-const buddyOverlay = document.getElementById('buddy-overlay');
-const buddyViewBody = document.getElementById('buddy-view-body');
+const btnGenBuddy    = document.getElementById('btn-gen-buddy');
+const btnCopyBuddy   = document.getElementById('btn-copy-buddy');
+const buddyOverlay   = document.getElementById('buddy-overlay');
+const buddyViewBody  = document.getElementById('buddy-view-body');
 const buddyViewTitle = document.getElementById('buddy-view-title');
-const btnCloseBuddy = document.getElementById('btn-close-buddy');
-const inputName = document.getElementById('input-name');
-const btnTheme = document.getElementById('btn-theme');
-const themeLabel = document.getElementById('theme-label');
-const inputBg = document.getElementById('input-bg');
-const btnResetBg = document.getElementById('btn-reset-bg');
-const btnSaveSet = document.getElementById('btn-save-settings');
-const autoPreview = document.getElementById('auto-time-preview');
-const btnStart = document.getElementById('btn-start');
-const btnEnd = document.getElementById('btn-end');
-const totalTimeEl = document.getElementById('total-time');
+const btnCloseBuddy  = document.getElementById('btn-close-buddy');
+const inputName      = document.getElementById('input-name');
+const btnTheme       = document.getElementById('btn-theme');
+const themeLabel     = document.getElementById('theme-label');
+const inputBg        = document.getElementById('input-bg');
+const btnResetBg     = document.getElementById('btn-reset-bg');
+const btnSaveSet     = document.getElementById('btn-save-settings');
+const autoPreview    = document.getElementById('auto-time-preview');
+const btnStart       = document.getElementById('btn-start');
+const btnEnd         = document.getElementById('btn-end');
+const totalTimeEl    = document.getElementById('total-time');
 const sessionCountEl = document.getElementById('session-count');
-const sessionsList = document.getElementById('sessions-list');
-const btnClear = document.getElementById('btn-clear');
+const sessionsList   = document.getElementById('sessions-list');
+const btnClear       = document.getElementById('btn-clear');
 
+/* ── Sync status ─────────────────────────────────────────────────────────── */
 function setSyncStatus(state, label) {
   syncIndicator.className = `sync-indicator ${state}`;
   syncIndicator.textContent = label;
   syncIndicator.classList.remove('hidden');
 }
 
+/* ── Storage key ─────────────────────────────────────────────────────────── */
 function getStorageKey(k) { return currentUser ? `${currentUser.id}_${k}` : k; }
 
+/* ── Init ────────────────────────────────────────────────────────────────── */
 async function init() {
   loadLocalSettings();
   applySettings();
@@ -490,8 +517,8 @@ async function init() {
   btnResetBg.addEventListener('click', resetBg);
   btnSaveSet.addEventListener('click', saveSettings);
   editLabelInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); saveEditedLabel(); }
-    else if (e.key === 'Escape') closeModals();
+    if (e.key === 'Enter')  { e.preventDefault(); saveEditedLabel(); }
+    if (e.key === 'Escape') closeModals();
   });
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -504,6 +531,7 @@ async function init() {
   checkBuddyParam();
 }
 
+/* ── Auth ────────────────────────────────────────────────────────────────── */
 async function initAuth() {
   const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
   authSetupMsg.classList.toggle('hidden', configured);
@@ -512,30 +540,25 @@ async function initAuth() {
 
   if (!configured || !window.supabase) {
     loadLocalSessions();
-    setSyncStatus('local', '⬤ Guest');
+    setSyncStatus('local', 'Guest');
     updateAuthUI();
     return;
   }
 
-  // ── FIX 2 & 3: Create client — Supabase JS v2 auto-detects token in hash
-  // and also syncs session across tabs/browsers via localStorage automatically.
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
-      // Persist session in localStorage so other browsers/tabs share it
-      persistSession: true,
-      // Detect session from URL hash (handles email confirmation redirect)
-      detectSessionInUrl: true,
-      // Use pkce flow for more secure email confirmation
-      flowType: 'pkce',
+      persistSession:     true,   // keep session in localStorage across browsers
+      detectSessionInUrl: true,   // pick up tokens from email confirmation hash
+      flowType:           'pkce', // secure flow for SPAs
     }
   });
 
-  // After createClient, clear the hash so it doesn't pollute the URL
+  // Clear valid token from URL bar after Supabase consumes it
   if (window.location.hash && window.location.hash.includes('access_token')) {
     history.replaceState({}, '', window.location.pathname + window.location.search);
   }
 
-  // Show auth callback errors if any
+  // Show any auth callback error (e.g. expired confirmation link)
   if (window.__authCallbackError) {
     openModal(authModal);
     setAuthStatus(window.__authCallbackError, 'error');
@@ -549,31 +572,24 @@ async function initAuth() {
     await loadCloudSessions();
   } else {
     loadLocalSessions();
-    setSyncStatus('local', '⬤ Guest');
+    setSyncStatus('local', 'Guest');
   }
   updateAuthUI();
 
-  // ── FIX 2: onAuthStateChange handles cross-browser sign-in correctly.
-  // When a user signs in on another browser (or confirms email), Supabase
-  // fires SIGNED_IN here on page focus/visibility, so we reload their data.
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    const wasLoggedIn = Boolean(currentUser);
     const newUser = session?.user || null;
-
     if (event === 'SIGNED_IN' && newUser) {
+      const wasGuest = !currentUser;
       currentUser = newUser;
-      if (!wasLoggedIn) {
-        await migrateLocalToCloud();
-      }
+      if (wasGuest) await migrateLocalToCloud();
       await loadCloudSessions();
       loadLocalSettings(); applySettings();
     } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       loadLocalSessions();
-      setSyncStatus('local', '⬤ Guest');
+      setSyncStatus('local', 'Guest');
     } else if (event === 'TOKEN_REFRESHED' && newUser) {
-      currentUser = newUser;
-      // Token silently refreshed — no need to reload sessions
+      currentUser = newUser; // silent refresh, no reload needed
     }
     updateAuthUI();
   });
@@ -583,20 +599,16 @@ async function handleAuthSubmit(e) {
   e.preventDefault();
   if (!supabaseClient) { setAuthStatus('Add your Supabase credentials first.', 'warn'); return; }
   const identifier = authIdentifier.value.trim();
-  const password = authPassword.value;
+  const password   = authPassword.value;
   const norm = normalizeIdentifier(identifier);
   if (!norm.ok) { setAuthStatus(norm.message, 'error'); return; }
   setAuthBusy(true); setAuthStatus('');
+
   const creds = { email: norm.email, password };
 
   if (authMode === 'signup') {
-    // ── FIX 3: Pass the correct redirect URL for email confirmation ──────────
-    // By default Supabase uses the Site URL from your project settings.
-    // Explicitly passing emailRedirectTo ensures it points to this page,
-    // not localhost:3000. Set your deployed URL here (or keep window.location.origin
-    // for automatic detection).
     const redirectTo = window.location.origin + window.location.pathname;
-    const result = await supabaseClient.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
       ...creds,
       options: {
         data: { username: norm.username, login_name: identifier },
@@ -604,17 +616,18 @@ async function handleAuthSubmit(e) {
       }
     });
     setAuthBusy(false);
-    if (result.error) { setAuthStatus(result.error.message, 'error'); return; }
-    if (!result.data.session) {
+    if (error) { setAuthStatus(error.message, 'error'); return; }
+    if (!data.session) {
+      // Email confirmation required
       setAuthStatus('Account created! Check your email to confirm, then log in.', 'ok');
       return;
     }
-    currentUser = result.data.user || null;
+    currentUser = data.user;
   } else {
-    const result = await supabaseClient.auth.signInWithPassword(creds);
+    const { data, error } = await supabaseClient.auth.signInWithPassword(creds);
     setAuthBusy(false);
-    if (result.error) { setAuthStatus(result.error.message, 'error'); return; }
-    currentUser = result.data.user || null;
+    if (error) { setAuthStatus(error.message, 'error'); return; }
+    currentUser = data.user;
   }
 
   loadLocalSettings();
@@ -630,29 +643,30 @@ async function handleLogout() {
   loadLocalSettings();
   applySettings();
   renderSessions();
-  setSyncStatus('local', '⬤ Guest');
+  setSyncStatus('local', 'Guest');
   updateAuthUI();
   closeModals();
 }
 
 function normalizeIdentifier(value) {
-  if (!value) return { ok: false, message: 'Enter a username or email.' };
+  if (!value) return { ok:false, message:'Enter a username or email.' };
   if (value.includes('@')) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return { ok: false, message: 'Enter a valid email address.' };
-    return { ok: true, email: value.toLowerCase(), username: value.split('@')[0].toLowerCase() };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      return { ok:false, message:'Enter a valid email address.' };
+    return { ok:true, email:value.toLowerCase(), username:value.split('@')[0].toLowerCase() };
   }
-  const u = value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-  if (u.length < 3) return { ok: false, message: 'Username must be at least 3 characters.' };
-  return { ok: true, email: `${u}@users.timelogger.local`, username: u };
+  const u = value.toLowerCase().replace(/[^a-z0-9._-]/g,'');
+  if (u.length < 3) return { ok:false, message:'Username must be at least 3 characters.' };
+  return { ok:true, email:`${u}@users.timelogger.local`, username:u };
 }
 
 function toggleAuthMode() { authMode = authMode === 'login' ? 'signup' : 'login'; updateAuthUI(); }
 
 function updateAuthUI() {
   const label = authMode === 'login' ? 'Login' : 'Create Account';
-  authModalTitle.textContent = currentUser ? 'Account' : label;
-  btnAuthSubmit.textContent = label;
-  btnAuthSwitch.textContent = authMode === 'login' ? 'Create an account' : 'Already have an account';
+  authModalTitle.textContent   = currentUser ? 'Account' : label;
+  btnAuthSubmit.textContent    = label;
+  btnAuthSwitch.textContent    = authMode === 'login' ? 'Create an account' : 'Already have an account';
   if (currentUser) {
     const display = getUserDisplayName(currentUser);
     authText.textContent = display;
@@ -660,8 +674,8 @@ function updateAuthUI() {
     authForm.classList.add('hidden');
     btnAuthSwitch.classList.add('hidden');
     authUserPanel.classList.remove('hidden');
-    authAvatar.textContent = display[0]?.toUpperCase() || 'U';
-    authUserName.textContent = display;
+    authAvatar.textContent    = display[0]?.toUpperCase() || 'U';
+    authUserName.textContent  = display;
     authUserEmail.textContent = currentUser.email || '';
     setAuthStatus('');
   } else {
@@ -675,78 +689,80 @@ function updateAuthUI() {
 }
 
 function getUserDisplayName(u) {
-  return u?.user_metadata?.username || u?.user_metadata?.login_name || u?.email?.split('@')[0] || 'User';
+  return u?.user_metadata?.username || u?.user_metadata?.login_name
+      || u?.email?.split('@')[0] || 'User';
 }
 function setAuthBusy(b) {
-  btnAuthSubmit.disabled = b;
+  btnAuthSubmit.disabled    = b;
   btnAuthSubmit.textContent = b ? 'Please wait…' : authMode === 'login' ? 'Login' : 'Create Account';
 }
-function setAuthStatus(msg, type = '') {
-  authStatus.textContent = msg;
-  authStatus.className = `auth-status ${type}`.trim();
+function setAuthStatus(msg, type='') {
+  authStatus.textContent  = msg;
+  authStatus.className    = `auth-status ${type}`.trim();
 }
 
+/* ── Cloud CRUD ──────────────────────────────────────────────────────────── */
 async function loadCloudSessions() {
-  setSyncStatus('syncing', '↻ Syncing…');
+  setSyncStatus('syncing', 'Syncing…');
   sessionsList.innerHTML = '<div class="loading-msg">Loading your sessions…</div>';
   const { data, error } = await supabaseClient
     .from('sessions')
     .select('*')
     .eq('user_id', currentUser.id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending:false });
   if (error) {
-    console.error(error);
-    setSyncStatus('error', '✕ Sync error');
+    console.error('loadCloudSessions:', error);
+    setSyncStatus('error', 'Sync error');
     loadLocalSessions();
     return;
   }
-  allSessions = (data || []).map(r => ({
-    id: r.id, dbId: r.id,
+  allSessions = (data||[]).map(r => ({
+    id:    r.id,   dbId:  r.id,
     label: r.label || 'Focus Block',
-    start: r.start_time, end: r.end_time,
-    dur: r.duration, mins: r.mins,
-    date: r.session_date || r.created_at?.slice(0, 10)
+    start: r.start_time,  end:  r.end_time,
+    dur:   r.duration,    mins: r.mins,
+    date:  r.session_date || r.created_at?.slice(0,10),
   }));
   applyFilter();
-  setSyncStatus('synced', '✓ Synced');
+  setSyncStatus('synced', 'Synced');
   loadLocalSettings(); applySettings();
 }
 
 async function saveSessionToCloud(s) {
-  setSyncStatus('syncing', '↻ Saving…');
+  setSyncStatus('syncing', 'Saving…');
   const { data, error } = await supabaseClient
     .from('sessions')
     .insert([{
-      user_id: currentUser.id,
-      label: s.label,
-      start_time: s.start,
-      end_time: s.end,
-      duration: s.dur,
-      mins: s.mins,
-      session_date: new Date().toISOString().slice(0, 10)
+      user_id:      currentUser.id,
+      label:        s.label,
+      start_time:   s.start,
+      end_time:     s.end,
+      duration:     s.dur,
+      mins:         s.mins,
+      session_date: new Date().toISOString().slice(0,10),
     }])
     .select().single();
-  if (error) { console.error(error); setSyncStatus('error', '✕ Save failed'); return null; }
-  setSyncStatus('synced', '✓ Synced');
+  if (error) { console.error('saveSessionToCloud:', error); setSyncStatus('error', 'Save failed'); return null; }
+  setSyncStatus('synced', 'Synced');
   return data;
 }
 
 async function updateLabelCloud(dbId, label) {
-  setSyncStatus('syncing', '↻ Saving…');
+  setSyncStatus('syncing', 'Saving…');
   const { error } = await supabaseClient
     .from('sessions').update({ label })
     .eq('id', dbId).eq('user_id', currentUser.id);
-  if (error) { setSyncStatus('error', '✕ Save failed'); return; }
-  setSyncStatus('synced', '✓ Synced');
+  if (error) { console.error('updateLabelCloud:', error); setSyncStatus('error', 'Save failed'); return; }
+  setSyncStatus('synced', 'Synced');
 }
 
 async function deleteCloud(dbId) {
-  setSyncStatus('syncing', '↻ Deleting…');
+  setSyncStatus('syncing', 'Deleting…');
   const { error } = await supabaseClient
     .from('sessions').delete()
     .eq('id', dbId).eq('user_id', currentUser.id);
-  if (error) { setSyncStatus('error', '✕ Delete failed'); return; }
-  setSyncStatus('synced', '✓ Synced');
+  if (error) { console.error('deleteCloud:', error); setSyncStatus('error', 'Delete failed'); return; }
+  setSyncStatus('synced', 'Synced');
 }
 
 async function migrateLocalToCloud() {
@@ -754,65 +770,70 @@ async function migrateLocalToCloud() {
   if (!raw) return;
   const local = JSON.parse(raw);
   if (!local.length) return;
-  setSyncStatus('syncing', '↻ Migrating guest data…');
+  setSyncStatus('syncing', 'Migrating guest data…');
   const rows = local.map(s => ({
-    user_id: currentUser.id,
-    label: s.label || 'Focus Block',
-    start_time: s.start, end_time: s.end,
-    duration: s.dur, mins: s.mins,
-    session_date: new Date().toISOString().slice(0, 10)
+    user_id:      currentUser.id,
+    label:        s.label || 'Focus Block',
+    start_time:   s.start, end_time: s.end,
+    duration:     s.dur,   mins:     s.mins,
+    session_date: s.date || new Date().toISOString().slice(0,10),
   }));
   const { error } = await supabaseClient.from('sessions').insert(rows);
   if (!error) localStorage.removeItem('tl_sessions');
 }
 
+/* ── Local storage ───────────────────────────────────────────────────────── */
 function loadLocalSessions() {
   const raw = localStorage.getItem('tl_sessions');
   allSessions = raw ? JSON.parse(raw) : [];
   applyFilter();
 }
 function saveLocal() { localStorage.setItem('tl_sessions', JSON.stringify(allSessions)); }
+
 function loadLocalSettings() {
   const raw = localStorage.getItem(getStorageKey('tl_settings'));
   settings = raw ? JSON.parse(raw) : {
-    name: currentUser ? getUserDisplayName(currentUser) : 'User',
-    theme: 'auto', customBg: null
+    name:     currentUser ? getUserDisplayName(currentUser) : 'User',
+    theme:    'auto',
+    customBg: null,
   };
   if (!localStorage.getItem('tl_theme_user_selected')) settings.theme = 'auto';
 }
 
+/* ── Filter & render ─────────────────────────────────────────────────────── */
 function applyFilter() {
-  const today = new Date().toISOString().slice(0, 10);
-  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-  if (activeFilter === 'today') sessions = allSessions.filter(s => (s.date || today) === today);
-  else if (activeFilter === 'week') sessions = allSessions.filter(s => (s.date || today) >= weekAgo);
-  else sessions = [...allSessions];
+  const today   = new Date().toISOString().slice(0,10);
+  const weekAgo = new Date(Date.now() - 7*86400000).toISOString().slice(0,10);
+  if      (activeFilter === 'today') sessions = allSessions.filter(s => (s.date||today) === today);
+  else if (activeFilter === 'week')  sessions = allSessions.filter(s => (s.date||today) >= weekAgo);
+  else                               sessions = [...allSessions];
   renderSessions();
 }
 
+/* ── Session logging ─────────────────────────────────────────────────────── */
 function logStart() {
   startTime = new Date();
   btnStart.disabled = true; btnEnd.disabled = false;
   const orig = btnStart.innerHTML;
-  btnStart.innerHTML = '⏱ Tracking…';
+  btnStart.innerHTML = 'Tracking…';
   setTimeout(() => { btnStart.innerHTML = orig; }, 1500);
 }
 
 async function logEnd() {
   if (!startTime) return;
-  const end = new Date();
-  if (end <= startTime) end.setDate(end.getDate() + 1);
+  const end  = new Date();
+  if (end <= startTime) end.setDate(end.getDate()+1);
   const mins = Math.round((end - startTime) / 60000);
-  const hh = Math.floor(mins / 60), mm = mins % 60;
-  const dur = hh > 0 ? `${hh}h ${mm}m` : `${mm}m`;
-  const fmt = { hour: 'numeric', minute: '2-digit', hour12: true };
-  const today = new Date().toISOString().slice(0, 10);
+  const hh   = Math.floor(mins/60), mm = mins%60;
+  const dur  = hh > 0 ? `${hh}h ${mm}m` : `${mm}m`;
+  const fmt  = { hour:'numeric', minute:'2-digit', hour12:true };
+  const today = new Date().toISOString().slice(0,10);
 
   const s = {
-    id: Date.now(), label: 'Focus Block',
+    id:    Date.now(), label: 'Focus Block',
     start: startTime.toLocaleTimeString('en-US', fmt),
-    end: end.toLocaleTimeString('en-US', fmt),
-    dur, mins, date: today
+    end:   end.toLocaleTimeString('en-US', fmt),
+    dur, mins, date: today,
   };
 
   if (currentUser && supabaseClient) {
@@ -826,25 +847,33 @@ async function logEnd() {
   btnStart.disabled = false; btnEnd.disabled = true;
 }
 
+/* ── Render ──────────────────────────────────────────────────────────────── */
 function renderSessions() {
   if (!sessions.length) {
-    const msgs = { today: 'No sessions today.<br>Hit Start to begin tracking.', week: 'No sessions this week.', all: 'No sessions yet.<br>Hit Start to begin tracking.' };
+    const msgs = {
+      today: 'No sessions today.<br>Hit Start to begin tracking.',
+      week:  'No sessions this week.',
+      all:   'No sessions yet.<br>Hit Start to begin tracking.',
+    };
     sessionsList.innerHTML = `<div class="empty-msg">${msgs[activeFilter]}</div>`;
-    totalTimeEl.textContent = '0h 0m';
+    totalTimeEl.textContent  = '0h 0m';
     sessionCountEl.textContent = '0';
     return;
   }
-  const totalMins = sessions.reduce((a, s) => a + (s.mins || 0), 0);
-  totalTimeEl.textContent = `${Math.floor(totalMins / 60)}h ${totalMins % 60}m`;
+  const totalMins = sessions.reduce((a,s) => a+(s.mins||0), 0);
+  totalTimeEl.textContent    = `${Math.floor(totalMins/60)}h ${totalMins%60}m`;
   sessionCountEl.textContent = sessions.length;
-  sessionsList.innerHTML = '';
+  sessionsList.innerHTML     = '';
 
   if (activeFilter !== 'today') {
     const groups = {};
-    sessions.forEach(s => { const d = s.date || new Date().toISOString().slice(0,10); (groups[d] = groups[d] || []).push(s); });
+    sessions.forEach(s => {
+      const d = s.date || new Date().toISOString().slice(0,10);
+      (groups[d] = groups[d]||[]).push(s);
+    });
     Object.keys(groups).sort((a,b) => b.localeCompare(a)).forEach(date => {
       const hdr = document.createElement('div');
-      hdr.className = 'date-group-header';
+      hdr.className   = 'date-group-header';
       hdr.textContent = fmtDateHdr(date);
       sessionsList.appendChild(hdr);
       groups[date].forEach(s => sessionsList.appendChild(buildItem(s)));
@@ -855,9 +884,9 @@ function renderSessions() {
 }
 
 function fmtDateHdr(d) {
-  const today = new Date().toISOString().slice(0,10);
+  const today     = new Date().toISOString().slice(0,10);
   const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-  if (d === today) return 'Today';
+  if (d === today)     return 'Today';
   if (d === yesterday) return 'Yesterday';
   return new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 }
@@ -874,22 +903,27 @@ function buildItem(s) {
       <div class="s-dur">${escapeHtml(s.dur)}</div>
       <button class="s-delete-btn" type="button" title="Delete">✕</button>
     </div>`;
-  li.querySelector('.s-label').addEventListener('click', e => { e.stopPropagation(); openEditModal(s.id, s.label||'Focus Block'); });
-  li.querySelector('.s-delete-btn').addEventListener('click', e => { e.stopPropagation(); deleteSession(s.id); });
+  li.querySelector('.s-label').addEventListener('click', e => {
+    e.stopPropagation(); openEditModal(s.id, s.label||'Focus Block');
+  });
+  li.querySelector('.s-delete-btn').addEventListener('click', e => {
+    e.stopPropagation(); deleteSession(s.id);
+  });
   return li;
 }
 
+/* ── Delete / edit / clear ───────────────────────────────────────────────── */
 async function deleteSession(id) {
-  const s = allSessions.find(x => x.id === id);
+  const s = allSessions.find(x => x.id===id);
   if (!confirm(`Delete "${s?.label||'this session'}"?`)) return;
-  if (currentUser && supabaseClient) await deleteCloud(s.dbId || id);
-  allSessions = allSessions.filter(x => x.id !== id);
+  if (currentUser && supabaseClient) await deleteCloud(s.dbId||id);
+  allSessions = allSessions.filter(x => x.id!==id);
   if (!currentUser) saveLocal();
   applyFilter();
 }
 
 function openEditModal(id, label) {
-  editingSessionId = id;
+  editingSessionId    = id;
   editLabelInput.value = label;
   openModal(editModal);
   setTimeout(() => { editLabelInput.focus(); editLabelInput.select(); }, 100);
@@ -898,10 +932,10 @@ function openEditModal(id, label) {
 async function saveEditedLabel() {
   if (!editingSessionId) return;
   const newLabel = editLabelInput.value.trim() || 'Focus Block';
-  const s = allSessions.find(x => x.id === editingSessionId);
+  const s = allSessions.find(x => x.id===editingSessionId);
   if (s) {
     s.label = newLabel;
-    if (currentUser && supabaseClient) await updateLabelCloud(s.dbId || s.id, newLabel);
+    if (currentUser && supabaseClient) await updateLabelCloud(s.dbId||s.id, newLabel);
     else saveLocal();
     applyFilter();
   }
@@ -909,78 +943,126 @@ async function saveEditedLabel() {
 }
 
 async function clearAll() {
-  const scope = activeFilter === 'today' ? "today's" : activeFilter === 'week' ? "this week's" : 'all';
+  const scope = activeFilter==='today' ? "today's" : activeFilter==='week' ? "this week's" : 'all';
   if (!confirm(`Clear ${scope} sessions?`)) return;
-  const visible = sessions.map(s => s.dbId || s.id);
+  const visible = sessions.map(s => s.dbId||s.id);
   if (currentUser && supabaseClient) {
-    setSyncStatus('syncing', '↻ Clearing…');
-    const { error } = await supabaseClient.from('sessions').delete().in('id', visible).eq('user_id', currentUser.id);
-    if (error) { setSyncStatus('error', '✕ Clear failed'); return; }
-    setSyncStatus('synced', '✓ Synced');
+    setSyncStatus('syncing', 'Clearing…');
+    const { error } = await supabaseClient
+      .from('sessions').delete()
+      .in('id', visible).eq('user_id', currentUser.id);
+    if (error) { setSyncStatus('error', 'Clear failed'); return; }
+    setSyncStatus('synced', 'Synced');
   }
   const visSet = new Set(visible);
-  allSessions = allSessions.filter(s => !visSet.has(s.dbId || s.id));
+  allSessions = allSessions.filter(s => !visSet.has(s.dbId||s.id));
   if (!currentUser) saveLocal();
   applyFilter();
 }
 
+/* ── Clock & theme ───────────────────────────────────────────────────────── */
 function updateClock() {
   const now = new Date(), h = now.getHours();
   const fmt = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
   clockEl.textContent = fmt; autoPreview.textContent = fmt;
-  if (settings.theme === 'auto') applyTheme();
-  // ── FIX 1: Removed emojis from greeting ────────────────────────────────────
-  let word = 'Good Evening';
-  if (h>=5&&h<12) word='Good Morning';
-  else if (h>=12&&h<17) word='Good Afternoon';
-  else if (h>=17&&h<21) word='Good Evening';
-  else word='Good Night';
+  if (settings.theme==='auto') applyTheme();
+  let word = 'Good Night';
+  if (h>=5  && h<12) word='Good Morning';
+  else if (h>=12 && h<17) word='Good Afternoon';
+  else if (h>=17 && h<21) word='Good Evening';
   greetingEl.textContent = `${word}, ${settings.name}`;
-  // ─────────────────────────────────────────────────────────────────────────────
 }
-function applySettings(){applyTheme();updateClock();if(inputName)inputName.value=settings.name;updateThemeLabel();applyBg();}
-function applyTheme(){const t=settings.theme==='auto'||!settings.theme?getTimeTheme():settings.theme;body.classList.toggle('theme-dark',t==='dark');body.classList.toggle('theme-light',t!=='dark');}
-function getTimeTheme(){const h=new Date().getHours();return h>=6&&h<18?'light':'dark';}
-function applyBg(){bg.style.backgroundImage=settings.customBg?`url('${settings.customBg}')`:'';} 
-function updateThemeLabel(){themeLabel.textContent=settings.theme==='auto'||!settings.theme?'Auto by Time':settings.theme==='dark'?'Dark Mode':'Light Mode';}
-function handleBgUpload(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{settings.customBg=ev.target.result;applyBg();};r.readAsDataURL(f);e.target.value='';}
-function resetBg(){settings.customBg=null;applyBg();}
-function saveSettings(){settings.name=inputName.value.trim()||'User';localStorage.setItem(getStorageKey('tl_settings'),JSON.stringify(settings));updateClock();closeModals();}
+function applySettings()  { applyTheme(); updateClock(); if(inputName) inputName.value=settings.name; updateThemeLabel(); applyBg(); }
+function applyTheme()     { const t=settings.theme==='auto'||!settings.theme?getTimeTheme():settings.theme; body.classList.toggle('theme-dark',t==='dark'); body.classList.toggle('theme-light',t!=='dark'); }
+function getTimeTheme()   { return new Date().getHours()>=6 && new Date().getHours()<18 ? 'light' : 'dark'; }
+function applyBg()        { bg.style.backgroundImage = settings.customBg ? `url('${settings.customBg}')` : ''; }
+function updateThemeLabel(){ themeLabel.textContent = settings.theme==='auto'||!settings.theme ? 'Auto by Time' : settings.theme==='dark' ? 'Dark Mode' : 'Light Mode'; }
+function handleBgUpload(e){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{settings.customBg=ev.target.result;applyBg();}; r.readAsDataURL(f); e.target.value=''; }
+function resetBg()        { settings.customBg=null; applyBg(); }
+function saveSettings()   { settings.name=inputName.value.trim()||'User'; localStorage.setItem(getStorageKey('tl_settings'),JSON.stringify(settings)); updateClock(); closeModals(); }
 
-function buildSummaryText(){
-  const now=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  const totalMins=sessions.reduce((a,s)=>a+(s.mins||0),0);
-  const hh=Math.floor(totalMins/60),mm=totalMins%60;
-  let t=`${settings.name}'s Time Log — ${now}\n${'─'.repeat(34)}\n`;
-  if(!sessions.length){t+='No sessions logged yet.\n';}
-  else{sessions.forEach((s,i)=>{t+=`${i+1}. ${s.label||'Focus Block'} — ${s.start} – ${s.end}  (${s.dur})\n`;});t+=`${'─'.repeat(34)}\nTotal: ${hh}h ${mm}m across ${sessions.length} block${sessions.length!==1?'s':''}\n`;}
+/* ── Share ───────────────────────────────────────────────────────────────── */
+function buildSummaryText() {
+  const now  = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const totalMins = sessions.reduce((a,s)=>a+(s.mins||0),0);
+  const hh=Math.floor(totalMins/60), mm=totalMins%60;
+  let t = `${settings.name}'s Time Log — ${now}\n${'─'.repeat(34)}\n`;
+  if (!sessions.length) { t+='No sessions logged yet.\n'; }
+  else {
+    sessions.forEach((s,i) => { t+=`${i+1}. ${s.label||'Focus Block'} — ${s.start} – ${s.end}  (${s.dur})\n`; });
+    t+=`${'─'.repeat(34)}\nTotal: ${hh}h ${mm}m across ${sessions.length} block${sessions.length!==1?'s':''}\n`;
+  }
   return t;
 }
-function openShare(){shareContent.textContent=buildSummaryText();buddyLinkInput.value='';btnCopyBuddy.classList.add('hidden');openModal(shareModal);}
-function shareVia(p){
-  const text=buildSummaryText(),enc=encodeURIComponent(text);
-  if(p==='whatsapp')window.open(`https://wa.me/?text=${enc}`,'_blank');
-  else if(p==='x')window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(settings.name+'\'s productivity today:\n'+sessions.length+' blocks · '+totalTimeEl.textContent+'\n\n#productivity #timetracking')}`,'_blank');
-  else if(p==='instagram'){navigator.clipboard.writeText(text).then(()=>{const el=shrInstagram.querySelector('span:last-child');el.textContent='Copied! Paste in IG';setTimeout(()=>{el.textContent='Instagram';},2800);}).catch(()=>{});window.open('https://www.instagram.com/','_blank');}
-  else if(p==='copy'){navigator.clipboard.writeText(text).then(()=>{copyLabel.textContent='Copied!';setTimeout(()=>{copyLabel.textContent='Copy Text';},2000);}).catch(()=>alert('Select text and copy manually.'));}
+function openShare() {
+  shareContent.textContent = buildSummaryText();
+  buddyLinkInput.value=''; btnCopyBuddy.classList.add('hidden');
+  openModal(shareModal);
 }
-function generateBuddyLink(){
-  if(!sessions.length){buddyLinkInput.value='Log some sessions first!';return;}
-  const payload={name:settings.name,date:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric'}),sessions:sessions.map(s=>({label:s.label||'Focus Block',start:s.start,end:s.end,dur:s.dur,mins:s.mins}))};
-  const enc=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  buddyLinkInput.value=`${window.location.href.split('?')[0]}?buddy=${enc}`;
+function shareVia(p) {
+  const text=buildSummaryText(), enc=encodeURIComponent(text);
+  if (p==='whatsapp')   window.open(`https://wa.me/?text=${enc}`,'_blank');
+  else if (p==='x')     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(settings.name+"'s productivity:\n"+sessions.length+' blocks · '+totalTimeEl.textContent+'\n\n#productivity #timetracking')}`,'_blank');
+  else if (p==='instagram') {
+    navigator.clipboard.writeText(text).then(()=>{
+      const el=shrInstagram.querySelector('span:last-child');
+      el.textContent='Copied! Paste in IG';
+      setTimeout(()=>{el.textContent='Instagram';},2800);
+    }).catch(()=>{});
+    window.open('https://www.instagram.com/','_blank');
+  }
+  else if (p==='copy') {
+    navigator.clipboard.writeText(text).then(()=>{
+      copyLabel.textContent='Copied!';
+      setTimeout(()=>{copyLabel.textContent='Copy Text';},2000);
+    }).catch(()=>alert('Select text and copy manually.'));
+  }
+}
+function generateBuddyLink() {
+  if (!sessions.length) { buddyLinkInput.value='Log some sessions first!'; return; }
+  const payload = {
+    name: settings.name,
+    date: new Date().toLocaleDateString('en-US',{month:'long',day:'numeric'}),
+    sessions: sessions.map(s=>({label:s.label||'Focus Block',start:s.start,end:s.end,dur:s.dur,mins:s.mins})),
+  };
+  const enc = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  buddyLinkInput.value = `${window.location.href.split('?')[0]}?buddy=${enc}`;
   btnCopyBuddy.classList.remove('hidden');
 }
-function copyBuddyLink(){navigator.clipboard.writeText(buddyLinkInput.value).then(()=>{btnCopyBuddy.textContent='Copied!';setTimeout(()=>{btnCopyBuddy.textContent='Copy Link';},2000);}).catch(()=>{buddyLinkInput.select();document.execCommand('copy');});}
-function checkBuddyParam(){
-  const param=new URLSearchParams(location.search).get('buddy');
-  if(!param)return;
-  try{const d=JSON.parse(decodeURIComponent(escape(atob(param))));const tm=(d.sessions||[]).reduce((a,s)=>a+(s.mins||0),0);let t=`${d.name}'s Time Log — ${d.date}\n${'─'.repeat(34)}\n`;(d.sessions||[]).forEach((s,i)=>{t+=`${i+1}. ${s.label||'Focus Block'} — ${s.start} – ${s.end}  (${s.dur})\n`;});t+=`${'─'.repeat(34)}\nTotal: ${Math.floor(tm/60)}h ${tm%60}m`;buddyViewTitle.textContent=`${d.name}'s Time Log`;buddyViewBody.textContent=t;buddyOverlay.classList.remove('hidden');history.replaceState({},'',location.pathname);}catch(e){console.warn('Invalid buddy link',e);}
+function copyBuddyLink() {
+  navigator.clipboard.writeText(buddyLinkInput.value)
+    .then(()=>{ btnCopyBuddy.textContent='Copied!'; setTimeout(()=>{btnCopyBuddy.textContent='Copy Link';},2000); })
+    .catch(()=>{ buddyLinkInput.select(); document.execCommand('copy'); });
+}
+function checkBuddyParam() {
+  const param = new URLSearchParams(location.search).get('buddy');
+  if (!param) return;
+  try {
+    const d  = JSON.parse(decodeURIComponent(escape(atob(param))));
+    const tm = (d.sessions||[]).reduce((a,s)=>a+(s.mins||0),0);
+    let t = `${d.name}'s Time Log — ${d.date}\n${'─'.repeat(34)}\n`;
+    (d.sessions||[]).forEach((s,i)=>{ t+=`${i+1}. ${s.label||'Focus Block'} — ${s.start} – ${s.end}  (${s.dur})\n`; });
+    t+=`${'─'.repeat(34)}\nTotal: ${Math.floor(tm/60)}h ${tm%60}m`;
+    buddyViewTitle.textContent = `${d.name}'s Time Log`;
+    buddyViewBody.textContent  = t;
+    buddyOverlay.classList.remove('hidden');
+    history.replaceState({},'',location.pathname);
+  } catch(e) { console.warn('Invalid buddy link',e); }
 }
 
-function openModal(m){m.classList.remove('hidden');backdrop.classList.remove('hidden');if(m===settingsModal){inputName.value=settings.name;updateThemeLabel();}}
-function closeModals(){[authModal,settingsModal,shareModal,editModal].forEach(m=>m.classList.add('hidden'));backdrop.classList.add('hidden');}
-function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+/* ── Modal helpers ───────────────────────────────────────────────────────── */
+function openModal(m) {
+  m.classList.remove('hidden');
+  backdrop.classList.remove('hidden');
+  if (m===settingsModal) { inputName.value=settings.name; updateThemeLabel(); }
+}
+function closeModals() {
+  [authModal,settingsModal,shareModal,editModal].forEach(m=>m.classList.add('hidden'));
+  backdrop.classList.add('hidden');
+}
+function escapeHtml(v) {
+  return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
