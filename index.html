@@ -203,6 +203,22 @@ body.theme-dark .pi-more{background:#3a3a3c;color:#e5e5ea}
 .goal-number-input::-webkit-inner-spin-button,.goal-number-input::-webkit-outer-spin-button{-webkit-appearance:none}
 .goal-number-input:focus{border-color:rgba(0,122,255,0.55)}
 .goal-unit-label{font-size:14px;color:var(--t2);font-weight:500}
+@keyframes sheet-up{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes spin-btn{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  #share-modal{align-items:flex-end}
+  #share-modal .share-modal-v2{border-radius:24px 24px 0 0;width:100%;max-width:100%;animation:sheet-up 0.34s cubic-bezier(0.32,0.72,0,1)}
+  .share-plat-wrap{padding:10px 4px 24px}
+  .plat-icon-wrap{width:56px;height:56px;font-size:24px}
+  .plat-lbl{font-size:11px}
+}
+.plat-btn.loading{opacity:0.55;pointer-events:none}
+.plat-btn.loading .plat-icon-wrap{position:relative}
+.plat-btn.loading .plat-icon-wrap::after{content:'';position:absolute;inset:2px;border-radius:50%;border:3px solid rgba(255,255,255,0.25);border-top-color:rgba(255,255,255,0.85);animation:spin-btn 0.65s linear infinite}
+.share-dl-btn{width:calc(100% - 28px);margin:0 14px 14px;padding:13px;border-radius:var(--radius-xl);border:1px solid rgba(0,122,255,0.38);background:rgba(0,122,255,0.14);color:#007aff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.share-dl-btn:hover{background:rgba(0,122,255,0.24)}
+body.theme-dark .share-dl-btn{color:#5ab0ff}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .buddy-section{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--glass-border)}
 .buddy-hint{font-size:12px;color:var(--t2);line-height:1.55}
 .buddy-row{display:flex;gap:8px}
@@ -449,6 +465,7 @@ body.theme-dark .copy-buddy-btn{color:#5ab0ff}
         <div style="flex:1"></div>
       </div>
     </div>
+    <button class="share-dl-btn" id="shr-download">⬇ Save card as image</button>
   </div>
 </div>
 
@@ -568,6 +585,7 @@ async function init() {
   document.getElementById('shr-copy').addEventListener('click', () => shareVia('copy'));
   document.getElementById('shr-sms').addEventListener('click', () => shareVia('sms'));
   document.getElementById('shr-native').addEventListener('click', () => shareVia('native'));
+  document.getElementById('shr-download').addEventListener('click', () => shareVia('download'));
   document.getElementById('shr-gen-buddy').addEventListener('click', openBuddyModal);
   btnCloseBuddy.addEventListener('click', () => buddyOverlay.classList.add('hidden'));
   btnTheme.addEventListener('click', () => {
@@ -1061,6 +1079,130 @@ function buildSummaryText(){
   return t;
 }
 
+async function buildShareImage() {
+  await document.fonts.ready;
+  const W=800, H=520;
+  const cv=document.createElement('canvas');
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+
+  function rr(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+    ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);
+    ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
+    ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);
+    ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+  }
+
+  // Background gradient
+  const bg=ctx.createLinearGradient(0,0,W*0.8,H);
+  bg.addColorStop(0,'#0d0d1a');bg.addColorStop(0.4,'#141428');bg.addColorStop(1,'#0a1a35');
+  rr(0,0,W,H,32); ctx.fillStyle=bg; ctx.fill();
+
+  // Blue glow
+  const g1=ctx.createRadialGradient(W*0.22,H*0.14,0,W*0.22,H*0.14,W*0.48);
+  g1.addColorStop(0,'rgba(0,122,255,0.30)');g1.addColorStop(1,'rgba(0,0,0,0)');
+  rr(0,0,W,H,32); ctx.fillStyle=g1; ctx.fill();
+
+  // Purple glow
+  const g2=ctx.createRadialGradient(W*0.80,H*0.78,0,W*0.80,H*0.78,W*0.38);
+  g2.addColorStop(0,'rgba(88,86,214,0.22)');g2.addColorStop(1,'rgba(0,0,0,0)');
+  rr(0,0,W,H,32); ctx.fillStyle=g2; ctx.fill();
+
+  const today=new Date();
+  const todayStr=today.toISOString().slice(0,10);
+  const dateStr=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const disp=allSessions.filter(s=>(s.date||todayStr)===todayStr);
+  const base=disp.length?disp:sessions;
+  const totalMins=base.reduce((a,s)=>a+(s.mins||0),0);
+  const hh=Math.floor(totalMins/60),mm=totalMins%60;
+  const timeStr=totalMins>0?`${hh}h ${mm}m`:'0h 0m';
+  const name=settings.name||'User';
+  const cnt=base.length;
+
+  // Name
+  ctx.fillStyle='rgba(255,255,255,0.92)';
+  ctx.font='bold 30px Figtree,-apple-system,sans-serif';
+  ctx.fillText(`${name}'s Progress`,48,66);
+
+  // Date
+  ctx.fillStyle='rgba(255,255,255,0.42)';
+  ctx.font='20px Figtree,-apple-system,sans-serif';
+  ctx.fillText(dateStr,48,96);
+
+  // Badge
+  const badgeW=170, badgeH=34, badgeX=W-badgeW-36, badgeY=26;
+  rr(badgeX,badgeY,badgeW,badgeH,17);
+  ctx.fillStyle='rgba(0,122,255,0.35)'; ctx.fill();
+  ctx.strokeStyle='rgba(0,122,255,0.55)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='#7ab8ff';
+  ctx.font='bold 14px Figtree,-apple-system,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('⏱ TIME LOGGER',badgeX+badgeW/2,badgeY+23);
+  ctx.textAlign='left';
+
+  // Big time
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 108px Figtree,-apple-system,sans-serif';
+  ctx.fillText(timeStr,44,230);
+
+  // Session count
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.font='22px Figtree,-apple-system,sans-serif';
+  ctx.fillText(cnt>0?`${cnt} session${cnt!==1?'s':''} logged today`:'No sessions today',48,270);
+
+  if(base.length>0){
+    // Divider
+    ctx.strokeStyle='rgba(255,255,255,0.10)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(48,298); ctx.lineTo(W-48,298); ctx.stroke();
+
+    // Sessions
+    let y=334;
+    base.slice(0,4).forEach(s=>{
+      const font19='19px Figtree,-apple-system,sans-serif';
+      ctx.font=font19;
+      const maxW=W-48-130;
+      let lbl=s.label||'Focus Block';
+      while(ctx.measureText(lbl).width>maxW&&lbl.length>3) lbl=lbl.slice(0,-1);
+      if(lbl!==s.label&&lbl.length<(s.label||'').length) lbl=lbl.slice(0,-1)+'…';
+      ctx.fillStyle='rgba(255,255,255,0.72)'; ctx.fillText(lbl,48,y);
+      ctx.fillStyle='rgba(255,255,255,0.40)'; ctx.textAlign='right';
+      ctx.fillText(s.dur,W-48,y); ctx.textAlign='left';
+      y+=38;
+    });
+    if(base.length>4){
+      ctx.fillStyle='rgba(255,255,255,0.30)';
+      ctx.font='15px Figtree,-apple-system,sans-serif';
+      ctx.fillText(`+${base.length-4} more`,48,y);
+    }
+  }
+
+  // Brand watermark
+  ctx.fillStyle='rgba(255,255,255,0.22)';
+  ctx.font='bold 13px Figtree,-apple-system,sans-serif';
+  ctx.fillText('⏱ TIME LOGGER',48,H-22);
+
+  return cv;
+}
+
+async function getShareBlob(){
+  const cv=await buildShareImage();
+  return new Promise(r=>cv.toBlob(r,'image/png'));
+}
+async function getShareFile(){
+  const blob=await getShareBlob();
+  return new File([blob],'time-logger-progress.png',{type:'image/png'});
+}
+function platLoading(id,on){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('loading',on);
+}
+function showPlatFeedback(id,msg,orig){
+  const lbl=document.querySelector(`#${id} .plat-lbl`);
+  if(lbl){lbl.textContent=msg;setTimeout(()=>lbl.textContent=orig,2600);}
+}
+
 function openShare(){
   const today=new Date();
   const dateStr=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
@@ -1094,31 +1236,95 @@ function openShare(){
   openModal(shareModal);
 }
 
-function shareVia(p){
-  const text=buildSummaryText();
-  const totalMins=sessions.reduce((a,s)=>a+(s.mins||0),0);
-  const hh=Math.floor(totalMins/60),mm=totalMins%60;
-  const tweetText=`📊 ${settings.name}'s productivity today:\n${sessions.length} session${sessions.length!==1?'s':''} · ⏱ ${hh}h ${mm}m focused\n\n#productivity #timetracking #deepwork`;
+async function shareVia(p){
+  const btnId = p==='copy'?'shr-copy':p==='x'?'shr-x':p==='whatsapp'?'shr-whatsapp':p==='instagram'?'shr-instagram':p==='sms'?'shr-sms':p==='download'?'shr-download':'shr-native';
+  platLoading(btnId, true);
+  try {
+    const text = buildSummaryText();
+    const totalMins = sessions.reduce((a,s)=>a+(s.mins||0),0);
+    const hh = Math.floor(totalMins/60), mm = totalMins%60;
+    const tweetText = `📊 ${settings.name}'s productivity today:\n${sessions.length} session${sessions.length!==1?'s':''} · ⏱ ${hh}h ${mm}m focused\n\n#productivity #timetracking #deepwork`;
 
-  if(p==='whatsapp'){window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');}
-  else if(p==='x'){window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`,'_blank');}
-  else if(p==='instagram'){
-    navigator.clipboard.writeText(text).then(()=>{
-      const lbl=document.querySelector('#shr-instagram .plat-lbl');
-      lbl.textContent='Copied!';setTimeout(()=>lbl.textContent='Instagram',2500);
-    }).catch(()=>{});
-    window.open('https://www.instagram.com/','_blank');
-  }
-  else if(p==='sms'){window.open(`sms:?&body=${encodeURIComponent(text)}`);}
-  else if(p==='native'){
-    if(navigator.share){navigator.share({title:`${settings.name}'s Time Log`,text}).catch(()=>{});}
-    else{navigator.clipboard.writeText(text).then(()=>{const lbl=document.querySelector('#shr-native .plat-lbl');lbl.textContent='Copied!';setTimeout(()=>lbl.textContent='More',2200);}).catch(()=>{});}
-  }
-  else if(p==='copy'){
-    navigator.clipboard.writeText(text).then(()=>{
-      const copyLabel=document.getElementById('copy-label');
-      copyLabel.textContent='✓ Copied!';setTimeout(()=>copyLabel.textContent='Copy link',2000);
-    }).catch(()=>alert('Select text and copy manually.'));
+    if (p === 'copy') {
+      try {
+        const blob = await getShareBlob();
+        await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+        showPlatFeedback('shr-copy','✓ Image copied!','Copy link');
+      } catch {
+        navigator.clipboard.writeText(text).then(()=>showPlatFeedback('shr-copy','✓ Copied!','Copy link')).catch(()=>{});
+      }
+
+    } else if (p === 'download') {
+      const blob = await getShareBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download='time-logger-progress.png'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+
+    } else if (p === 'instagram') {
+      // Web Share API v2 with file — native OS sheet opens, user picks Instagram
+      try {
+        const file = await getShareFile();
+        if (navigator.canShare?.({files:[file]})) {
+          await navigator.share({files:[file], title:`${settings.name}'s Time Log`});
+        } else {
+          // Fallback: copy image then open Instagram
+          const blob = await getShareBlob();
+          await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+          showPlatFeedback('shr-instagram','Image copied! Paste in IG','Instagram');
+          setTimeout(()=>window.open('https://www.instagram.com/','_blank'), 900);
+        }
+      } catch(e) {
+        if (e?.name !== 'AbortError') window.open('https://www.instagram.com/','_blank');
+      }
+
+    } else if (p === 'x') {
+      try {
+        const file = await getShareFile();
+        if (navigator.canShare?.({files:[file]})) {
+          // Mobile: native share sheet → user picks Twitter
+          await navigator.share({files:[file], text: tweetText});
+        } else {
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`,'_blank');
+        }
+      } catch(e) {
+        if (e?.name !== 'AbortError') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`,'_blank');
+      }
+
+    } else if (p === 'whatsapp') {
+      try {
+        const file = await getShareFile();
+        if (navigator.canShare?.({files:[file]})) {
+          await navigator.share({files:[file], text});
+        } else {
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
+        }
+      } catch(e) {
+        if (e?.name !== 'AbortError') window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
+      }
+
+    } else if (p === 'sms') {
+      window.open(`sms:?&body=${encodeURIComponent(text)}`);
+
+    } else if (p === 'native') {
+      try {
+        const file = await getShareFile();
+        if (navigator.canShare?.({files:[file]})) {
+          await navigator.share({files:[file], title:`${settings.name}'s Time Log`, text});
+        } else if (navigator.share) {
+          await navigator.share({title:`${settings.name}'s Time Log`, text});
+        } else {
+          // Desktop fallback: download the image
+          const blob = await getShareBlob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href=url; a.download='time-logger-progress.png'; a.click();
+          setTimeout(()=>URL.revokeObjectURL(url), 5000);
+        }
+      } catch(e) { /* user cancelled */ }
+    }
+  } finally {
+    platLoading(btnId, false);
   }
 }
 
